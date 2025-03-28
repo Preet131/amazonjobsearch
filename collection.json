@@ -1,0 +1,194 @@
+{
+	"info": {
+		"_postman_id": "7644e1b9-fd53-47ab-abf4-109723c6c8ee",
+		"name": "Amazon Job Search",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "39975236"
+	},
+	"item": [
+		{
+			"name": "CANADA",
+			"item": [
+				{
+					"name": "https://e5mquma77feepi2bdn4d6h3mpu.appsync-api.us-east-1.amazonaws.com/graphql",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Capture the response data from the Amazon API\r",
+									"let amazonData = pm.response.json(); // Get the response as JSON\r",
+									"\r",
+									"// Debug: Log the entire response to verify its structure\r",
+									"console.log(\"Full API Response: \", JSON.stringify(amazonData, null, 2));\r",
+									"\r",
+									"let isDataAvailable = false;\r",
+									"let emailBody = 'Here are the latest Amazon job results:\\n\\n';\r",
+									"\r",
+									"// Check if job data is available and correctly structured\r",
+									"if (\r",
+									"  amazonData &&\r",
+									"  amazonData.data &&\r",
+									"  amazonData.data.searchJobCardsByLocation &&\r",
+									"  amazonData.data.searchJobCardsByLocation.jobCards &&\r",
+									"  amazonData.data.searchJobCardsByLocation.jobCards.length > 0\r",
+									") {\r",
+									"  // Store the response data in the environment to be used in the email script\r",
+									"  pm.environment.set(\r",
+									"    \"amazonResponse\",\r",
+									"    JSON.stringify(amazonData.data.searchJobCardsByLocation.jobCards)\r",
+									"  );\r",
+									"  console.log(\"Response: \", pm.environment.get(\"amazonResponse\")); \r",
+									"\r",
+									"  // Mailgun API key and encoded key\r",
+									"  let apiKey = \"ff25f26091c49521387d403f95dfbe10-c02fd0ba-7bea2ff3\";\r",
+									"  let encodedApiKey = Buffer.from(\"api:\" + apiKey).toString(\"base64\");\r",
+									"  \r",
+									"  let jobCards = amazonData.data.searchJobCardsByLocation.jobCards; // Use correct path\r",
+									"  let jobLinks = [];\r",
+									"  \r",
+									"  // Iterate over each job card to create the job links\r",
+									"  for (let i = 0; i < jobCards.length; i++) {\r",
+									"    let jobId = jobCards[i].jobId;  // Make sure jobId is correctly referenced from each job card\r",
+									"    if (jobId) {\r",
+									"      let jobLink = `https://hiring.amazon.ca/app#/jobDetail?jobId=${jobId}&locale=en-CA&fromVanity=1`; // URL for Canadian jobs\r",
+									"      jobLinks.push(jobLink);  // Add the job link to the array\r",
+									"    }\r",
+									"  }\r",
+									"\r",
+									"  // Logging the jobLinks array to verify\r",
+									"  console.log(\"Generated Job Links: \", jobLinks);\r",
+									"\r",
+									"  // Prepare the email body with the generated job links\r",
+									"  if (jobLinks.length > 0) {\r",
+									"    emailBody += jobLinks.join('\\n');\r",
+									"  } else {\r",
+									"    emailBody += \"No job links found.\";\r",
+									"  }\r",
+									"\r",
+									"  // Send the email with Mailgun\r",
+									"  pm.sendRequest(\r",
+									"  {\r",
+									"    url: \"https://api.mailgun.net/v3/preetvaghela.com/messages\",\r",
+									"    method: \"POST\",\r",
+									"    header: {\r",
+									"      Authorization: \"Basic \" + encodedApiKey, // Use encoded API key\r",
+									"    },\r",
+									"    body: {\r",
+									"      mode: \"formdata\",\r",
+									"      formdata: [\r",
+									"        {\r",
+									"          key: \"from\",\r",
+									"          value: \"Excited User <mailgun@preetvaghela.com>\",\r",
+									"\r",
+									"        },\r",
+									"        { key: \"to\", value: \"vaghela131@gmail.com, preetvaghela131@gmail.com, diya.vaghela.2112@gmail.com, lavvsss114@gmail.com\" },\r",
+									"        { key: \"subject\", value: \"Amazon Job Search Results\" },\r",
+									"        {\r",
+									"          key: \"text\",\r",
+									"          value: emailBody,\r",
+									"        },\r",
+									"        {\r",
+									"          key: \"html\",\r",
+									"          value: emailBody,\r",
+									"        },\r",
+									"      ],\r",
+									"    },\r",
+									"  },\r",
+									"  function (err, res) {\r",
+									"    if (err) {\r",
+									"      console.log(\"Error sending email:\", err);\r",
+									"    } else {\r",
+									"      console.log(\"Email Response: \", JSON.stringify(res, null, 2)); // Log Mailgun response\r",
+									"      console.log(\"Email sent successfully:\", res);\r",
+									"    }\r",
+									"  }\r",
+									");\r",
+									"\r",
+									"} else {\r",
+									"  console.log(\"No job data available or response structure is invalid.\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							},
+							{
+								"key": "authorization",
+								"value": "Bearer Status|unauthenticated|Session|eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJpYXQiOjE3MzI1Mzg1OTQsImV4cCI6MTczMjU0MjE5NH0.AQICAHgz1m58+e586dZFf4bchvbbMWCAcCXZvg9CS5F50i9DfAESunhMtNSzRhSeDKG1Z42aAAAAtDCBsQYJKoZIhvcNAQcGoIGjMIGgAgEAMIGaBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDKZI7mKyDtbWW5lREgIBEIBtVonutoUqFSsPrJ+sP4w5P7BByUI/IEESPBtGSuXviTmH7otzi/eif1tg4ma2CrGpFbrlelpwA6Bev5pO/CTK/aIgFCJaf7w2Tt9cOiKlmARNS9iboTFLOw8sppz4GcG2+d7HboilBj/MiL3W8Q=="
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Brave\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "country",
+								"value": "United States"
+							},
+							{
+								"key": "iscanary",
+								"value": "false"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "content-type",
+								"value": "application/json"
+							},
+							{
+								"key": "Sec-GPC",
+								"value": "1"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "cross-site"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "host",
+								"value": "e5mquma77feepi2bdn4d6h3mpu.appsync-api.us-east-1.amazonaws.com"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operationName\": \"searchJobCardsByLocation\",\r\n    \"variables\": {\r\n        \"searchJobRequest\": {\r\n            \"locale\": \"en-CA\",\r\n            \"country\": \"Canada\",\r\n            \"pageSize\": 100,\r\n            \"geoQueryClause\": {\r\n                \"lat\": 42.988148,\r\n                \"lng\": -81.246092,\r\n                \"unit\": \"km\",\r\n                \"distance\": 100\r\n            },\r\n            \"dateFilters\": [\r\n                {\r\n                    \"key\": \"firstDayOnSite\",\r\n                    \"range\": {\r\n                        \"startDate\": \"2024-11-26\"\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"query\": \"query searchJobCardsByLocation($searchJobRequest: SearchJobRequest!) {\\n  searchJobCardsByLocation(searchJobRequest: $searchJobRequest) {\\n    nextToken\\n    jobCards {\\n      jobId\\n      language\\n      dataSource\\n      requisitionType\\n      jobTitle\\n      jobType\\n      employmentType\\n      city\\n      state\\n      postalCode\\n      locationName\\n      totalPayRateMin\\n      totalPayRateMax\\n      tagLine\\n      bannerText\\n      image\\n      jobPreviewVideo\\n      distance\\n      featuredJob\\n      bonusJob\\n      bonusPay\\n      scheduleCount\\n      currencyCode\\n      geoClusterDescription\\n      surgePay\\n      jobTypeL10N\\n      employmentTypeL10N\\n      bonusPayL10N\\n      surgePayL10N\\n      totalPayRateMinL10N\\n      totalPayRateMaxL10N\\n      distanceL10N\\n      monthlyBasePayMin\\n      monthlyBasePayMinL10N\\n      monthlyBasePayMax\\n      monthlyBasePayMaxL10N\\n      jobContainerJobMetaL1\\n      virtualLocation\\n      poolingEnabled\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "https://e5mquma77feepi2bdn4d6h3mpu.appsync-api.us-east-1.amazonaws.com/graphql"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

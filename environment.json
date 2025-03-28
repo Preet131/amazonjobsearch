@@ -1,0 +1,39 @@
+{
+	"id": "82ea9831-1a02-4053-9316-a78522ff0e28",
+	"name": "Amazon Job Searcher",
+	"values": [
+		{
+			"key": "amazonResponse",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "api_key",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "api_url",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "sender_email",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "receiver_email",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-11-25T16:10:52.811Z",
+	"_postman_exported_using": "Postman/11.20.0"
+}
