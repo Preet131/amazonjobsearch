@@ -17,6 +17,14 @@ module.exports = [
         }
     },
     {
+        name: "Hamilton, ON",
+        coordinates: {
+            lat: 42.779441,  // Updated coordinates
+            lng: -81.182274, // Updated coordinates
+            distance: 100
+        }
+    },
+    {
         name: "Ottawa, ON",
         coordinates: {
             lat: 45.421532,
