@@ -1,10 +1,12 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import subprocess
 import threading
 import queue
 import os
 from datetime import datetime
+import platform
+from playsound import playsound
 
 class JobSearchGUI:
     def __init__(self, root):
@@ -149,6 +151,10 @@ class JobSearchGUI:
                 if self.running:
                     timestamp = datetime.now().strftime("%H:%M:%S")
                     self.output_queue.put(f"[{timestamp}] {line}")
+                    
+                    # Check if a job is found and trigger the alarm
+                    if "job found" in line.lower():
+                        self.trigger_alarm()
                 else:
                     break
                     
@@ -164,8 +170,17 @@ class JobSearchGUI:
         
         if self.running:
             self.root.after(100, self.check_output)
+    
+    def trigger_alarm(self):
+        try:
+            playsound("alarm.wav")  # Ensure "alarm.mp3" exists in your project folder
+        except Exception as e:
+            print(f"Error playing sound: {e}")
+
+        # Show alarm message box
+        messagebox.showinfo("Job Found", "A new job has been found!")
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = JobSearchGUI(root)
-    root.mainloop() 
+    root.mainloop()

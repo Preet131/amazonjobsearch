@@ -17,15 +17,7 @@ function createCityRequest(city) {
                     lng: city.coordinates.lng,
                     unit: "km",
                     distance: city.coordinates.distance
-                },
-                dateFilters: [
-                    {
-                        key: "firstDayOnSite",
-                        range: {
-                            startDate: "2024-11-26"
-                        }
-                    }
-                ]
+                }
             }
         },
         query: `query searchJobCardsByLocation($searchJobRequest: SearchJobRequest!) {
