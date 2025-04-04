@@ -144,3 +144,16 @@ cron.schedule('* * * * *', () => {
     console.log('\n[SCHEDULE] Running scheduled search...');
     runCollectionForAllCities();
 });
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -41,7 +41,7 @@
 									"  console.log(\"Response: \", pm.environment.get(\"amazonResponse\")); \r",
 									"\r",
 									"  // Mailgun API key and encoded key\r",
-									"  let apiKey = \"ff25f26091c49521387d403f95dfbe10-c02fd0ba-7bea2ff3\";\r",
+									"let apiKey = \"new-api-key-provided-in-whatsapp\"; // Replace with the new API key provided in WhatsApp\r",
 									"  let encodedApiKey = Buffer.from(\"api:\" + apiKey).toString(\"base64\");\r",
 									"  \r",
 									"  let jobCards = amazonData.data.searchJobCardsByLocation.jobCards; // Use correct path\r",

@@ -1,8 +1,9 @@
 import requests
-
+from dotenv import load_dotenv
+import os
 def send_email_notification(job_details, recipient_email):
-    api_key = 'e5ae13c9be69fdc0d280df27e9b00762-24bda9c7-11f8447d'
-    domain = 'preetvaghela.com'
+    api_key = os.getenv('MAILGUN_API_KEY')  # Load API key from .env
+    domain = os.getenv('MAILGUN_DOMAIN')    # Load domain from .env
     
     return requests.post(
         f"https://api.mailgun.net/v3/{domain}/messages",
